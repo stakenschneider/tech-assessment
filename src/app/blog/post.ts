@@ -3,7 +3,7 @@ export interface Post {
     title: string;
     description: string;
     published_timestamp: string;
-    cover_image: string;
+    social_image: string;
     tags: string[];
     user: User;
 }
