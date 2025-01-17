@@ -2,19 +2,27 @@
 
 import {useEffect, useState} from 'react';
 import {useRouter} from "next/navigation";
+import {fetchPosts} from "@/app/services/postService";
+import {Post} from "@/app/blog/post";
 
 
 function BlogPageList() {
-
+    const [posts, setPosts] = useState<Post[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const router = useRouter();
 
     useEffect(() => {
         async function loadPosts() {
-
+            try {
+                const data = await fetchPosts();
+                setPosts(data);
+            } catch (error) {
+                console.error('Failed to load posts:', error);
+            }
         }
 
         loadPosts().then(() => {
+
         });
     }, []);
 
@@ -46,7 +54,20 @@ function BlogPageList() {
                 />
             </div>
 
-            <div className="px-4 mt-4"></div>
+            <div className="px-4 mt-4">
+                <div className="columns-3xs">
+
+                    {posts.map((post) => (
+                        <a key={post.id}
+                           href={`/blog/${post.id}`}>
+                            <div
+                                className="text-black mb-4 mr-4 p-2 w-full cursor-pointer bg-amber-50 rounded shadow-md hover:shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+                                {post.title}
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }
