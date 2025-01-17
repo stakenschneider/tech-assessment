@@ -4,18 +4,21 @@ import {useEffect, useState} from 'react';
 import {useRouter} from "next/navigation";
 import {fetchPosts} from "@/app/services/postService";
 import {Post} from "@/app/blog/post";
+import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 
 function BlogPageList() {
     const [posts, setPosts] = useState<Post[]>([]);
+    const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const router = useRouter();
+    const router: AppRouterInstance = useRouter();
 
     useEffect(() => {
         async function loadPosts() {
             try {
-                const data = await fetchPosts();
+                const data: Post[] = await fetchPosts();
                 setPosts(data);
+                setFilteredPosts(data);
             } catch (error) {
                 console.error('Failed to load posts:', error);
             }
@@ -25,6 +28,18 @@ function BlogPageList() {
 
         });
     }, []);
+
+    useEffect(() => {
+        if (searchQuery === '') {
+            setFilteredPosts(posts);
+        } else {
+            setFilteredPosts(
+                posts.filter((post: Post) =>
+                    post.title.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+            );
+        }
+    }, [searchQuery, posts]);
 
     const handleLogout = () => {
         localStorage.removeItem('isAuthenticated');
@@ -56,16 +71,19 @@ function BlogPageList() {
 
             <div className="px-4 mt-4">
                 <div className="columns-3xs">
-
-                    {posts.map((post) => (
-                        <a key={post.id}
-                           href={`/blog/${post.id}`}>
-                            <div
-                                className="text-black mb-4 mr-4 p-2 w-full cursor-pointer bg-amber-50 rounded shadow-md hover:shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105">
-                                {post.title}
-                            </div>
-                        </a>
-                    ))}
+                    {filteredPosts.length === 0 ? (
+                        <p>No posts found.</p>
+                    ) : (
+                        filteredPosts.map((post) => (
+                            <a key={post.id}
+                               href={`/blog/${post.id}`}>
+                                <div
+                                    className="text-black mb-4 mr-4 p-2 w-full cursor-pointer bg-amber-50 rounded shadow-md hover:shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+                                    {post.title}
+                                </div>
+                            </a>
+                        ))
+                    )}
                 </div>
             </div>
         </div>
