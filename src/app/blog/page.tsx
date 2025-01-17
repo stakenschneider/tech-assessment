@@ -6,12 +6,14 @@ import {fetchPosts} from "@/app/services/postService";
 import {Post} from "@/app/blog/post";
 import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime";
 import {withAuth} from "@/app/utils/withAuth";
+import LoadingIndicator from "@/app/utils/loadingIndicator";
 
 
 function BlogPageList() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
     const router: AppRouterInstance = useRouter();
 
     useEffect(() => {
@@ -22,6 +24,8 @@ function BlogPageList() {
                 setFilteredPosts(data);
             } catch (error) {
                 console.error('Failed to load posts:', error);
+            } finally {
+                setIsLoading(false);
             }
         }
 
@@ -46,6 +50,10 @@ function BlogPageList() {
         localStorage.removeItem('isAuthenticated');
         router.push('/');
     };
+
+    if (isLoading) {
+        return <LoadingIndicator message="Loading posts..."/>;
+    }
 
     return (
         <div>

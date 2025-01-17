@@ -6,10 +6,12 @@ import {Post} from '@/app/blog/post';
 import {useParams} from 'next/navigation';
 import {fetchPostById} from "@/app/services/postService";
 import {withAuth} from "@/app/utils/withAuth";
+import LoadingIndicator from "@/app/utils/loadingIndicator";
 
 function BlogPost() {
     const {id} = useParams();
     const [post, setPost] = useState<Post | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         async function loadPost() {
@@ -18,6 +20,8 @@ function BlogPost() {
                 setPost(data);
             } catch (error) {
                 console.error('Failed to fetch post:', error);
+            } finally {
+                setIsLoading(false);
             }
         }
 
@@ -26,7 +30,11 @@ function BlogPost() {
     }, [id]);
 
     if (!post) {
-        return <p>Post not found</p>;
+        return <p className="flex items-center justify-center h-screen">Post not found</p>;
+    }
+
+    if (isLoading) {
+        return <LoadingIndicator message="Loading post..."/>;
     }
 
     return (
