@@ -5,6 +5,7 @@ import {useRouter} from "next/navigation";
 import {fetchPosts} from "@/app/services/postService";
 import {Post} from "@/app/blog/post";
 import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime";
+import {withAuth} from "@/app/utils/withAuth";
 
 
 function BlogPageList() {
@@ -90,4 +91,4 @@ function BlogPageList() {
     );
 }
 
-export default BlogPageList;
+export default withAuth(BlogPageList);

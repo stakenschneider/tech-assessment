@@ -5,6 +5,7 @@ import Link from 'next/link';
 import {Post} from '@/app/blog/post';
 import {useParams} from 'next/navigation';
 import {fetchPostById} from "@/app/services/postService";
+import {withAuth} from "@/app/utils/withAuth";
 
 function BlogPost() {
     const {id} = useParams();
@@ -41,4 +42,4 @@ function BlogPost() {
     );
 }
 
-export default BlogPost;
+export default withAuth(BlogPost);
