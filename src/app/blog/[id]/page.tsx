@@ -40,32 +40,61 @@ function BlogPost() {
     }
 
     return (
-        <div className="p-8">
-            <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
-            <div>{post.description}</div>
+        <div className="min-h-screen bg-gray-50 p-6 md:p-12">
+            <header className="mb-6">
+                <h1 className="text-2xl md:text-4xl font-bold text-gray-800">{post.title}</h1>
+                <p className="text-gray-600 mt-2">{post.description}</p>
+            </header>
 
-            <Image width={1000} height={1000} layout="intrinsic" src={post.social_image} alt={post.id}/>
+            <div className="my-6">
+                <Image
+                    width={1000}
+                    height={600}
+                    layout="intrinsic"
+                    src={post.social_image}
+                    alt={`Image for ${post.title}`}
+                    className="rounded-lg shadow-md"
+                />
+            </div>
 
-            <div className="flex flex-wrap items-center mt-4">
+            {/* Tags */}
+            <section className="flex flex-wrap items-center my-4 gap-2">
                 {post.tags.map((tag) => (
-                    <span key={tag} className="bg-blue-300 px-2 py-1 rounded-full mr-2">{tag}</span>
+                    <span
+                        key={tag}
+                        className="bg-blue-200 text-blue-800 px-3 py-1 text-sm rounded-full shadow-sm"
+                    >
+                    #{tag}
+                </span>
                 ))}
-            </div>
+            </section>
 
-            <div className="flex items-center mt-8">
-                <Image width={50} height={50} src={post.user.profile_image_90} alt={post.user.name}/>
-                <div className="flex-col ml-2 text-xs justify-end">
-                    <p>{post.user.username}</p>
-                    <p>{new Date(post.published_timestamp).toDateString()}</p>
+            {/* Author Section */}
+            <footer className="flex items-center mt-8 bg-white shadow-md p-4 rounded-lg">
+                <Image
+                    width={50}
+                    height={50}
+                    src={post.user.profile_image_90}
+                    alt={`Profile image of ${post.user.name}`}
+                    className="rounded-full"
+                />
+                <div className="ml-4">
+                    <p className="text-gray-800 font-semibold">{post.user.username}</p>
+                    <p className="text-gray-600 text-sm">
+                        Published on {new Date(post.published_timestamp).toLocaleDateString()}
+                    </p>
                 </div>
-            </div>
+            </footer>
 
-            <Link href="/blog"
-                  className="mt-12 px-4 py-2 inline-block bg-blue-800 hover:bg-blue-950 text-white rounded-full">
+            <Link
+                href="/blog"
+                className="mt-12 inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full transition"
+            >
                 Back to Blog
             </Link>
         </div>
     );
+
 }
 
 export default withAuth(BlogPost);
